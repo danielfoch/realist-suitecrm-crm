@@ -72,6 +72,12 @@ See `docs/REALIST_PRODUCT_EXPANSION_BACKLOG.md` for the next major product addit
 2. **Deal-analysis flywheel** so users can apply saved assumptions from one property to similar listings and power through many deals. This should drive repeat analysis, comparisons, shortlists, financing/help CTAs, and leaderboard progress.
 3. **Better plex detection** using explicit listing tags first, then kitchen count as the strongest fallback proxy, then text cues like separate entrance, basement apartment, in-law suite, upper/lower units, separately metered, etc. Always label uncertain results as estimated/possible and require legal verification.
 
+## Leaderboard rewards
+
+See `docs/REALIST_LEADERBOARD_REWARDS.md` for the monthly top-analyst payout plan.
+
+Direction: Realist should be able to pay the top eligible analyst on the monthly leaderboard, e.g. `$100`, via Stripe. MVP must include eligibility checks, anti-gaming/fraud rules, and an admin approval gate before sending money. Long-term payout path should use Stripe Connect; do not store bank details directly.
+
 ## Cross-platform app direction
 
 Realist.ca should become a single account-backed platform across web, iOS, and Android. The mobile apps should use the existing site/product vision as the guide, not become a separate product.

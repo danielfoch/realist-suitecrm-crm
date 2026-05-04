@@ -107,6 +107,7 @@ Use existing SuiteCRM modules first. Add custom modules only when the concept ca
 | `realist_agent_action` | Agent-safe action request ledger | `action_id`, `idempotency_key`, `actor`, `dry_run`, `status`, `policy_result`, `target_record`. |
 | `realist_outreach_decision` | Why a message/task was allowed or blocked | `decision_id`, `behaviour_reason`, `cooldown_result`, `suppression_result`, `recommended_channel`. |
 | `realist_leaderboard_snapshot` | Weekly stats email source | `week_start`, `week_end`, `score`, `rank`, `stats_json`, `cta_url`. |
+| `realist_leaderboard_reward` | Monthly top-analyst payout ledger | `period`, `winner_user_id`, `amount_cents`, `status`, `eligibility_result`, `fraud_result`, `stripe_transfer_id`. |
 | `realist_content_recommendation` | Podcast/article/deal recommendation | `content_type`, `content_id`, `reason`, `url`, `expires_at`. |
 
 ## Webhook events from Realist.ca
@@ -147,6 +148,7 @@ All events must include an immutable `event_id`, timestamp, user/contact identit
 | `podcast.played` | Topic interest | Recommend a matching Realist.ca resource only if useful and fresh. |
 | `financing.intent` | Mortgage/private lending/refi signal | Create financing opportunity/task; route to approved partner workflow. |
 | `leaderboard.weekly.ready` | Weekly engagement summary available | Queue leaderboard email with stats and return CTA. |
+| `leaderboard.monthly.closed` | Monthly competition period closed | Calculate top eligible analyst, create reward record, require review before Stripe payout. |
 | `help.requested` | Direct request for help | Immediate task/opportunity; can bypass normal nurture cooldown, not consent/suppression. |
 
 ## Workflows
