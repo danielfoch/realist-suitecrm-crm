@@ -1,0 +1,49 @@
+{
+  "schema_version": "realist.agent_action.v1",
+  "action_type": "leaderboard_email.draft",
+  "dry_run": true,
+  "idempotency_key": "realist:leaderboard.weekly.ready:usr_123:2026-W18",
+  "actor": {
+    "type": "openclaw_agent",
+    "id": "clyde",
+    "display_name": "Clyde"
+  },
+  "source": {
+    "system": "realist.ca",
+    "event_id": "evt_lb_2026w18_usr_123",
+    "event_type": "leaderboard.weekly.ready",
+    "occurred_at": "2026-05-03T13:00:00Z"
+  },
+  "behaviour_reason": "Weekly Realist.ca leaderboard is ready after the user ran four deal calculator sessions, saved two deals, and listened to 37 podcast minutes.",
+  "target": {
+    "module": "Contacts",
+    "lookup": {
+      "realist_user_id": "usr_123",
+      "email": "investor@example.com"
+    }
+  },
+  "payload": {
+    "leaderboard": {
+      "week": "2026-W18",
+      "rank": 42,
+      "score": 880,
+      "stats": {
+        "calculator_runs": 4,
+        "saved_deals": 2,
+        "podcast_minutes": 37,
+        "return_visits": 3
+      },
+      "return_url": "https://realist.ca/leaderboard?week=2026-W18"
+    },
+    "draft": {
+      "subject": "Your Realist week: 4 deals tested, rank #42",
+      "body_text": "You were active on Realist this week: 4 calculator runs, 2 saved deals, and 37 podcast minutes. You finished #42 on the investor leaderboard. The useful next step is to revisit the saved deals and compare financing assumptions before chasing showings: https://realist.ca/leaderboard?week=2026-W18"
+    }
+  },
+  "policy": {
+    "requires_confirmation": true,
+    "allow_outbound": true,
+    "cooldown_key": "leaderboard_email:usr_123:2026-W18",
+    "consent_required": true
+  }
+}

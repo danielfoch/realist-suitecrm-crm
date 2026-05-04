@@ -1,0 +1,43 @@
+{
+  "schema_version": "realist.agent_action.v1",
+  "action_type": "contact.upsert",
+  "dry_run": true,
+  "idempotency_key": "realist:user.created:usr_123",
+  "actor": {
+    "type": "openclaw_agent",
+    "id": "clyde",
+    "display_name": "Clyde"
+  },
+  "source": {
+    "system": "realist.ca",
+    "event_id": "evt_user_123",
+    "event_type": "user.created",
+    "occurred_at": "2026-05-03T13:00:00Z"
+  },
+  "behaviour_reason": "User created a Realist.ca account after viewing Hamilton multiplex content and saving an investor search.",
+  "target": {
+    "module": "Contacts",
+    "lookup": {
+      "realist_user_id": "usr_123",
+      "email": "investor@example.com"
+    }
+  },
+  "payload": {
+    "fields": {
+      "first_name": "Alex",
+      "last_name": "Investor",
+      "email1": "investor@example.com",
+      "lead_source": "Realist.ca",
+      "description": "Realist.ca signup. Interested in Hamilton multiplex content and saved investor search."
+    },
+    "search_evidence": {
+      "searched_by": ["realist_user_id", "email"],
+      "expected_result": "no exact match before create, unique exact match before update"
+    }
+  },
+  "policy": {
+    "requires_confirmation": true,
+    "allow_outbound": false,
+    "consent_required": true
+  }
+}

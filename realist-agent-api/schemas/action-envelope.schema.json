@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://realist.ca/schemas/realist.agent_action.v1.json",
+  "title": "Realist OpenClaw Agent Action Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "action_type",
+    "dry_run",
+    "idempotency_key",
+    "actor",
+    "source",
+    "behaviour_reason",
+    "target",
+    "payload",
+    "policy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "realist.agent_action.v1"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "contact.search",
+        "contact.upsert",
+        "note.create",
+        "task.create",
+        "opportunity.upsert",
+        "outbound.draft",
+        "leaderboard_email.draft"
+      ]
+    },
+    "dry_run": {
+      "type": "boolean",
+      "description": "Must be true unless confirming a previously stored dry-run."
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 240,
+      "pattern": "^[a-zA-Z0-9:._\\-]+$"
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["openclaw_agent", "human", "system"]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "event_id", "event_type", "occurred_at"],
+      "properties": {
+        "system": {
+          "type": "string",
+          "enum": ["realist.ca", "suitecrm", "openclaw", "manual"]
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 3
+        },
+        "event_type": {
+          "type": "string",
+          "minLength": 3
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "behaviour_reason": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Concrete user behaviour or explicit request that justifies this action. Generic nurture is invalid."
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["module", "lookup"],
+      "properties": {
+        "module": {
+          "type": "string",
+          "enum": ["Contacts", "Leads", "Accounts", "Opportunities", "Tasks", "Notes", "Calls", "Meetings"]
+        },
+        "record_id": {
+          "type": "string"
+        },
+        "lookup": {
+          "type": "object",
+          "additionalProperties": true,
+          "minProperties": 1,
+          "properties": {
+            "realist_user_id": { "type": "string" },
+            "email": { "type": "string", "format": "email" },
+            "phone": { "type": "string" },
+            "name": { "type": "string" }
+          }
+        }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true,
+      "minProperties": 1
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requires_confirmation", "allow_outbound"],
+      "properties": {
+        "requires_confirmation": {
+          "type": "boolean"
+        },
+        "allow_outbound": {
+          "type": "boolean"
+        },
+        "cooldown_key": {
+          "type": "string"
+        },
+        "consent_required": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  }
+}
