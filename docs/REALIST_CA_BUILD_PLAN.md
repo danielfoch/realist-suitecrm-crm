@@ -64,6 +64,14 @@ Realist.ca interactions
 6. Replace mock metrics with live Realist deal/search/rent data.
 7. Add account/session personalization from prior user behaviour.
 
+## Product expansion backlog
+
+See `docs/REALIST_PRODUCT_EXPANSION_BACKLOG.md` for the next major product additions:
+
+1. **Book/send a home inspector** from a listing or deal-analysis page, with checkout around a default `$500` inspection product, CRM task/opportunity creation, and inspector/contractor onboarding. Start manual assignment before building full marketplace dispatch.
+2. **Deal-analysis flywheel** so users can apply saved assumptions from one property to similar listings and power through many deals. This should drive repeat analysis, comparisons, shortlists, financing/help CTAs, and leaderboard progress.
+3. **Better plex detection** using explicit listing tags first, then kitchen count as the strongest fallback proxy, then text cues like separate entrance, basement apartment, in-law suite, upper/lower units, separately metered, etc. Always label uncertain results as estimated/possible and require legal verification.
+
 ## Cross-platform app direction
 
 Realist.ca should become a single account-backed platform across web, iOS, and Android. The mobile apps should use the existing site/product vision as the guide, not become a separate product.
