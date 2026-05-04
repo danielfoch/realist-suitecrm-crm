@@ -64,6 +64,25 @@ Realist.ca interactions
 6. Replace mock metrics with live Realist deal/search/rent data.
 7. Add account/session personalization from prior user behaviour.
 
+## Cross-platform app direction
+
+Realist.ca should become a single account-backed platform across web, iOS, and Android. The mobile apps should use the existing site/product vision as the guide, not become a separate product.
+
+See `docs/REALIST_CROSS_PLATFORM_APP_PLAN.md` for the full app strategy.
+
+Key rule: all saved searches, saved deals, calculator runs, leaderboard state, alerts, preferences, and help/financing requests must live in shared backend state so users can move between web, iOS, and Android seamlessly.
+
+Build web/mobile around the same event model:
+
+```text
+web / iOS / Android interaction
+  -> shared Realist API + auth
+  -> normalized Realist event
+  -> Realist Agent API
+  -> SuiteCRM source-of-truth records
+  -> next-best-action / draft / task / handoff
+```
+
 ## Non-negotiables
 
 - No generic nurture.
