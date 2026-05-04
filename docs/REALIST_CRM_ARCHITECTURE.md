@@ -49,6 +49,40 @@ Adapters
   SMS provider | email provider | calendar provider | Realist.ca links | podcast feed
 ```
 
+## API-led operating model
+
+Realist CRM should be built as an API/workflow layer, not as another SaaS dashboard clone.
+
+The useful parts of most GTM/CRM tools are the data, APIs, routing rules, and delivery infrastructure behind the screen. The dashboard exists because humans need buttons. Agents do not. OpenClaw should be able to call explicit, policy-checked endpoints and let SuiteCRM store the state.
+
+### Layer map
+
+| Layer | Realist.ca / CRM responsibility | Examples |
+|---|---|---|
+| Signal layer | Detect what is worth acting on. | Calculator runs, saved searches, deal favourites, financing intent, podcast/article engagement, leaderboard readiness, return visits, market/deal changes. |
+| Data layer | Turn raw behaviour into context. | Investor profile, budget, target markets, asset type, financing stage, saved deals, analysis history, likely next CTA. |
+| Action layer | Decide and prepare the useful next step. | Leaderboard email draft, hot handoff task, financing intro task, relevant deal/content recommendation, retargeting/audience sync later. |
+| Automation layer | Orchestrate calls and enforce policy. | OpenClaw agent actions, dry-run/confirm workflow, idempotency, audit logging, cooldown checks, next-best-action selection. |
+| System-of-record layer | Own durable customer state. | SuiteCRM contacts, leads, opportunities, tasks, notes, consent, suppression, owner assignment, custom Realist modules. |
+| Rails layer | Deliver messages or calendar actions. | Email provider, SMS provider, calendar provider, webhook callbacks; all replaceable. |
+
+### Product rule
+
+Build the backend so the CRM is an agent-readable state layer. The first-class product surface is not the SuiteCRM UI; it is a small set of safe endpoints and clear records that agents and lightweight Realist.ca UI components can read/write.
+
+Minimum durable endpoints:
+
+```text
+POST /realist-agent/webhooks/realist
+POST /realist-agent/actions/dry-run
+POST /realist-agent/actions/confirm
+GET  /realist-agent/audit/{idempotency_key}
+GET  /realist-agent/contacts/{id}/timeline
+GET  /realist-agent/contacts/{id}/next-best-action
+```
+
+This is the GHL replacement pattern: own the data and workflow logic; rent the communications rails.
+
 ## Entity model
 
 Use existing SuiteCRM modules first. Add custom modules only when the concept cannot be represented cleanly.
@@ -228,5 +262,32 @@ Every mutation checks:
 3. Build webhook intake in log-only mode.
 4. Add custom fields for Realist identity and behavioural summary.
 5. Implement dry-run search-before-create for contacts/leads.
-6. Implement leaderboard webhook -> email draft, not send.
-7. Add audit table/module before enabling confirmed writes.
+6. Implement `/contacts/{id}/timeline` from Realist events, notes, tasks, opportunities, and outbound logs.
+7. Implement `/contacts/{id}/next-best-action` with deterministic policy checks.
+8. Implement leaderboard webhook -> email draft, not send.
+9. Add audit table/module before enabling confirmed writes.
+
+## Realist.ca frontend build-plan tie-in
+
+The public Realist.ca site should act as the signal generator for the CRM. The homepage and product UI should show the same intelligence the backend uses: live deal scanning, estimated cap rates, cash flow, investor score, risk, saved searches, and weekly leaderboard progress.
+
+First homepage slice:
+
+- Interactive AI deal-radar hero with hoverable market/map zones.
+- Mock/live market metrics: estimated cap rate, cash flow, rent estimate, price/rent ratio, investor score, risk.
+- Clear CTA into account creation, deal analysis, saved search, or weekly leaderboard.
+- Every meaningful interaction emits a Realist event that can later feed CRM next-best-action logic.
+
+Frontend events to emit as soon as the site has auth/session support:
+
+| Frontend event | Why CRM cares | Possible next best action |
+|---|---|---|
+| `homepage.market_hovered` | Anonymous/known user showed market curiosity. | No outreach; use for session personalization. |
+| `homepage.cta_clicked` | User intent source for attribution. | Create/update source note after signup. |
+| `deal_metric.viewed` | User inspected cap rate/cash flow assumptions. | Recommend calculator or related market page. |
+| `calculator.started` | Underwriting intent. | Add activity note; personalize next session. |
+| `calculator.completed` | Stronger investor signal. | Draft help-underwriting or financing CTA if repeated/high-quality. |
+| `leaderboard.viewed` | User is engaged with progress loop. | Queue weekly leaderboard email when ready. |
+| `saved_search.created` | Explicit market/property intent. | Create follow-up task or relevant deal alert if consent exists. |
+
+Do not make the homepage a decorative animation only. The animation should teach users what Realist does and create behavioural signals for the CRM.
